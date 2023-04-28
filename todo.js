@@ -31,8 +31,10 @@ function ToDoItem(props) {
   const todoItem = (
     <div>
       {props.content}
-      <BaseButton text="編集" />
-      <BaseButton text="削除" />
+      <div className="buttons-container">
+        <BaseButton text="編集" />
+        <BaseButton text="削除" />
+      </div>
     </div>
   );
   const todoItemInEditing = <ToDoUpdateForm content={props.content} />;

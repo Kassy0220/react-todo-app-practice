@@ -1,1 +1,68 @@
-/* Write your CSS if you want */
+body {
+  width: 500px;
+  background-color: #fff8d6;
+}
+
+h1 {
+  text-align: center;
+}
+
+#create-form {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  width: 250px;
+  height: 100px;
+}
+
+#create-form textarea {
+  margin: 0 auto 1em auto;
+}
+
+#create-form button {
+  margin: 0 auto;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.todo-item {
+  background-color: #ffffe6;
+  margin-bottom: 1em;
+  padding: 0.5em;
+  border: solid 0.5px #000000;
+  border-radius: 15px;
+  white-space: pre-wrap;
+}
+
+#update-form textarea {
+  vertical-align: middle;
+}
+
+#update-form button {
+  margin-left: 0.5em;
+}
+
+.buttons-container {
+  text-align: right;
+}
+
+.buttons-container button {
+  margin-right: 0.5em;
+}
+
+button {
+  background-color: #ffeccc;
+  padding: 0.2em 0.5em;
+  border: solid 0.5px #666666;
+  border-radius: 3px;
+}
+
+button:hover {
+  background-color: #ffdb99;
+}

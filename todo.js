@@ -1,29 +1,31 @@
 class ToDoApp extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {allTasks: this.props.tasks};
+    this.state = {allTasks: [], idCounter: 0};
 
-    this.calcMaxId = this.calcMaxId.bind(this);
     this.createToDo = this.createToDo.bind(this);
     this.updateToDo = this.updateToDo.bind(this);
     this.editToDo = this.editToDo.bind(this);
     this.deleteToDo = this.deleteToDo.bind(this);
   }
 
-  // 暫定的にメモのIDを取得する処理を作成
-  calcMaxId() {
-    const maxId = Math.max.apply(
-      null,
-      this.state.allTasks.map((todo) => todo.id)
-    );
-    return maxId;
+  componentDidMount() {
+    const allTasks = JSON.parse(localStorage.getItem("allTasks"));
+    const idCounter = JSON.parse(localStorage.getItem("idCounter"));
+
+    if (allTasks) {
+      this.setState({allTasks: allTasks, idCounter: idCounter});
+    }
   }
 
   createToDo(content) {
     const tasks = this.state.allTasks;
-    const id = this.calcMaxId() + 1;
+    const id = this.state.idCounter + 1;
     tasks.push({id, content, isEditing: false});
-    this.setState({allTasks: tasks});
+    this.setState({allTasks: tasks, idCounter: id});
+
+    this.saveTask(tasks);
+    localStorage.setItem("idCounter", id);
   }
 
   updateToDo(id, content) {
@@ -35,11 +37,15 @@ class ToDoApp extends React.Component {
       return todo;
     });
     this.setState({allTasks: updatedAllTasks});
+
+    this.saveTask(updatedAllTasks);
   }
 
   deleteToDo(id) {
     let deletedAllTasks = this.state.allTasks.filter((todo) => todo.id !== id);
     this.setState({allTasks: deletedAllTasks});
+
+    this.saveTask(deletedAllTasks);
   }
 
   editToDo(id) {
@@ -50,6 +56,13 @@ class ToDoApp extends React.Component {
       return todo;
     });
     this.setState({allTasks: editedAllTasks});
+
+    this.saveTask(editedAllTasks);
+  }
+
+  saveTask(allTasks) {
+    const json = JSON.stringify(allTasks);
+    localStorage.setItem("allTasks", json);
   }
 
   render() {
@@ -190,13 +203,6 @@ class ToDoUpdateForm extends React.Component {
   }
 }
 
-// サンプルデータを用意
-let allTasks = [
-  {id: 1, content: "あ〜ちゃん", isEditing: false},
-  {id: 2, content: "のっち", isEditing: false},
-  {id: 3, content: "かしゆか", isEditing: true},
-];
-
 const root = ReactDOM.createRoot(document.querySelector("#app"));
-const element = <ToDoApp tasks={allTasks} />;
+const element = <ToDoApp />;
 root.render(element);

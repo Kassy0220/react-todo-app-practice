@@ -7,6 +7,7 @@ class ToDoApp extends React.Component {
     this.createToDo = this.createToDo.bind(this);
     this.updateToDo = this.updateToDo.bind(this);
     this.editToDo = this.editToDo.bind(this);
+    this.deleteToDo = this.deleteToDo.bind(this);
   }
 
   // 暫定的にメモのIDを取得する処理を作成
@@ -36,6 +37,11 @@ class ToDoApp extends React.Component {
     this.setState({allTasks: updatedAllTasks});
   }
 
+  deleteToDo(id) {
+    let deletedAllTasks = this.state.allTasks.filter((todo) => todo.id !== id);
+    this.setState({allTasks: deletedAllTasks});
+  }
+
   editToDo(id) {
     let editedAllTasks = this.state.allTasks.map((todo) => {
       if (todo.id === id) {
@@ -54,6 +60,7 @@ class ToDoApp extends React.Component {
           allTasks={this.state.allTasks}
           updateToDo={this.updateToDo}
           editToDo={this.editToDo}
+          deleteToDo={this.deleteToDo}
         />
       </div>
     );
@@ -103,6 +110,7 @@ function ToDoList(props) {
       todo={todo}
       updateToDo={props.updateToDo}
       editToDo={props.editToDo}
+      deleteToDo={props.deleteToDo}
     />
   ));
 
@@ -115,6 +123,7 @@ function ToDoItem(props) {
   const todoIsEditing = props.todo.isEditing;
   const updateToDo = props.updateToDo;
   const editToDo = props.editToDo;
+  const deleteToDo = props.deleteToDo;
 
   const todoItemInEditing = (
     <ToDoUpdateForm id={todoId} content={todoContent} updateToDo={updateToDo} />
@@ -130,7 +139,13 @@ function ToDoItem(props) {
         >
           編集
         </button>
-        <button>削除</button>
+        <button
+          onClick={() => {
+            deleteToDo(todoId);
+          }}
+        >
+          削除
+        </button>
       </div>
     </div>
   );

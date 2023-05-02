@@ -6,6 +6,7 @@ class ToDoApp extends React.Component {
     this.calcMaxId = this.calcMaxId.bind(this);
     this.createToDo = this.createToDo.bind(this);
     this.updateToDo = this.updateToDo.bind(this);
+    this.editToDo = this.editToDo.bind(this);
   }
 
   // 暫定的にメモのIDを取得する処理を作成
@@ -35,11 +36,25 @@ class ToDoApp extends React.Component {
     this.setState({allTasks: updatedAllTasks});
   }
 
+  editToDo(id) {
+    let editedAllTasks = this.state.allTasks.map((todo) => {
+      if (todo.id === id) {
+        todo.isEditing = true;
+      }
+      return todo;
+    });
+    this.setState({allTasks: editedAllTasks});
+  }
+
   render() {
     return (
       <div>
         <ToDoCreateForm createToDo={this.createToDo} />
-        <ToDoList allTasks={this.state.allTasks} updateToDo={this.updateToDo} />
+        <ToDoList
+          allTasks={this.state.allTasks}
+          updateToDo={this.updateToDo}
+          editToDo={this.editToDo}
+        />
       </div>
     );
   }
@@ -73,7 +88,7 @@ class ToDoCreateForm extends React.Component {
             value={this.state.value}
             onChange={this.handleChange}
           ></textarea>
-          <BaseButton text="新規作成" />
+          <button>新規作成</button>
         </form>
       </div>
     );
@@ -83,7 +98,12 @@ class ToDoCreateForm extends React.Component {
 function ToDoList(props) {
   const allTasks = props.allTasks;
   const taskList = allTasks.map((todo) => (
-    <ToDoItem key={todo.id} todo={todo} updateToDo={props.updateToDo} />
+    <ToDoItem
+      key={todo.id}
+      todo={todo}
+      updateToDo={props.updateToDo}
+      editToDo={props.editToDo}
+    />
   ));
 
   return <ul>{taskList}</ul>;
@@ -94,6 +114,7 @@ function ToDoItem(props) {
   const todoContent = props.todo.content;
   const todoIsEditing = props.todo.isEditing;
   const updateToDo = props.updateToDo;
+  const editToDo = props.editToDo;
 
   const todoItemInEditing = (
     <ToDoUpdateForm id={todoId} content={todoContent} updateToDo={updateToDo} />
@@ -102,8 +123,14 @@ function ToDoItem(props) {
     <div>
       {todoContent}
       <div className="buttons-container">
-        <BaseButton text="編集" />
-        <BaseButton text="削除" />
+        <button
+          onClick={() => {
+            editToDo(todoId);
+          }}
+        >
+          編集
+        </button>
+        <button>削除</button>
       </div>
     </div>
   );
@@ -141,15 +168,11 @@ class ToDoUpdateForm extends React.Component {
             value={this.state.value}
             onChange={this.handleChange}
           ></textarea>
-          <BaseButton text="更新" />
+          <button>更新</button>
         </form>
       </div>
     );
   }
-}
-
-function BaseButton(props) {
-  return <button>{props.text}</button>;
 }
 
 // サンプルデータを用意

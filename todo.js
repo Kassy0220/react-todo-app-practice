@@ -5,6 +5,7 @@ class ToDoApp extends React.Component {
 
     this.calcMaxId = this.calcMaxId.bind(this);
     this.createToDo = this.createToDo.bind(this);
+    this.updateToDo = this.updateToDo.bind(this);
   }
 
   // 暫定的にメモのIDを取得する処理を作成
@@ -23,11 +24,22 @@ class ToDoApp extends React.Component {
     this.setState({allTasks: tasks});
   }
 
+  updateToDo(id, content) {
+    let updatedAllTasks = this.state.allTasks.map((todo) => {
+      if (todo.id === id) {
+        todo.content = content;
+        todo.isEditing = false;
+      }
+      return todo;
+    });
+    this.setState({allTasks: updatedAllTasks});
+  }
+
   render() {
     return (
       <div>
         <ToDoCreateForm createToDo={this.createToDo} />
-        <ToDoList tasks={this.props.tasks} />
+        <ToDoList allTasks={this.state.allTasks} updateToDo={this.updateToDo} />
       </div>
     );
   }
@@ -69,43 +81,71 @@ class ToDoCreateForm extends React.Component {
 }
 
 function ToDoList(props) {
-  const allTasks = props.tasks;
-  const taskList = allTasks.map((task) => (
-    <ToDoItem key={task.id} content={task.content} isEditing={task.isEditing} />
+  const allTasks = props.allTasks;
+  const taskList = allTasks.map((todo) => (
+    <ToDoItem key={todo.id} todo={todo} updateToDo={props.updateToDo} />
   ));
 
   return <ul>{taskList}</ul>;
 }
 
 function ToDoItem(props) {
+  const todoId = props.todo.id;
+  const todoContent = props.todo.content;
+  const todoIsEditing = props.todo.isEditing;
+  const updateToDo = props.updateToDo;
+
+  const todoItemInEditing = (
+    <ToDoUpdateForm id={todoId} content={todoContent} updateToDo={updateToDo} />
+  );
   const todoItem = (
     <div>
-      {props.content}
+      {todoContent}
       <div className="buttons-container">
         <BaseButton text="編集" />
         <BaseButton text="削除" />
       </div>
     </div>
   );
-  const todoItemInEditing = <ToDoUpdateForm content={props.content} />;
 
   return (
     <li className="todo-item">
-      {props.isEditing ? todoItemInEditing : todoItem}
+      {todoIsEditing ? todoItemInEditing : todoItem}
     </li>
   );
 }
 
-function ToDoUpdateForm(props) {
-  return (
-    <div>
-      <form id="update-form">
-        <textarea value={props.content}></textarea>
-        {/* "set either `onChange` or `readOnly`"という警告が出るが、ハンドラは現段階で追加しないので無視 */}
-        <BaseButton text="更新" />
-      </form>
-    </div>
-  );
+class ToDoUpdateForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: this.props.content};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.props.updateToDo(this.props.id, this.state.value);
+  }
+
+  render() {
+    return (
+      <div>
+        <form id="update-form" onSubmit={this.handleSubmit}>
+          <textarea
+            value={this.state.value}
+            onChange={this.handleChange}
+          ></textarea>
+          <BaseButton text="更新" />
+        </form>
+      </div>
+    );
+  }
 }
 
 function BaseButton(props) {

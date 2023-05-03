@@ -1,7 +1,7 @@
 class ToDoApp extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {allTasks: [], idCounter: 0};
+    this.state = {allToDos: [], idCounter: 0};
 
     this.createToDo = this.createToDo.bind(this);
     this.updateToDo = this.updateToDo.bind(this);
@@ -10,59 +10,59 @@ class ToDoApp extends React.Component {
   }
 
   componentDidMount() {
-    const allTasks = JSON.parse(localStorage.getItem("allTasks"));
+    const allToDos = JSON.parse(localStorage.getItem("allToDos"));
     const idCounter = JSON.parse(localStorage.getItem("idCounter"));
 
-    if (allTasks) {
-      this.setState({allTasks: allTasks, idCounter: idCounter});
+    if (allToDos) {
+      this.setState({allToDos: allToDos, idCounter: idCounter});
     }
   }
 
   createToDo(content) {
-    const tasks = this.state.allTasks;
+    const todos = this.state.allToDos;
     const id = this.state.idCounter + 1;
-    tasks.push({id, content, isEditing: false});
-    this.setState({allTasks: tasks, idCounter: id});
+    todos.push({id, content, isEditing: false});
+    this.setState({allToDos: todos, idCounter: id});
 
-    this.saveTask(tasks);
+    this.saveToDo(todos);
     localStorage.setItem("idCounter", id);
   }
 
   updateToDo(id, content) {
-    let updatedAllTasks = this.state.allTasks.map((todo) => {
+    const todos = this.state.allToDos.map((todo) => {
       if (todo.id === id) {
         todo.content = content;
         todo.isEditing = false;
       }
       return todo;
     });
-    this.setState({allTasks: updatedAllTasks});
+    this.setState({allToDos: todos});
 
-    this.saveTask(updatedAllTasks);
+    this.saveToDo(todos);
   }
 
   deleteToDo(id) {
-    let deletedAllTasks = this.state.allTasks.filter((todo) => todo.id !== id);
-    this.setState({allTasks: deletedAllTasks});
+    const todos = this.state.allToDos.filter((todo) => todo.id !== id);
+    this.setState({allToDos: todos});
 
-    this.saveTask(deletedAllTasks);
+    this.saveToDo(todos);
   }
 
   editToDo(id) {
-    let editedAllTasks = this.state.allTasks.map((todo) => {
+    const todos = this.state.allToDos.map((todo) => {
       if (todo.id === id) {
         todo.isEditing = true;
       }
       return todo;
     });
-    this.setState({allTasks: editedAllTasks});
+    this.setState({allToDos: todos});
 
-    this.saveTask(editedAllTasks);
+    this.saveToDo(todos);
   }
 
-  saveTask(allTasks) {
-    const json = JSON.stringify(allTasks);
-    localStorage.setItem("allTasks", json);
+  saveToDo(allToDos) {
+    const json = JSON.stringify(allToDos);
+    localStorage.setItem("allToDos", json);
   }
 
   render() {
@@ -70,7 +70,7 @@ class ToDoApp extends React.Component {
       <div>
         <ToDoCreateForm createToDo={this.createToDo} />
         <ToDoList
-          allTasks={this.state.allTasks}
+          allToDos={this.state.allToDos}
           updateToDo={this.updateToDo}
           editToDo={this.editToDo}
           deleteToDo={this.deleteToDo}
@@ -116,8 +116,8 @@ class ToDoCreateForm extends React.Component {
 }
 
 function ToDoList(props) {
-  const allTasks = props.allTasks;
-  const taskList = allTasks.map((todo) => (
+  const allToDos = props.allToDos;
+  const todoList = allToDos.map((todo) => (
     <ToDoItem
       key={todo.id}
       todo={todo}
@@ -127,7 +127,7 @@ function ToDoList(props) {
     />
   ));
 
-  return <ul>{taskList}</ul>;
+  return <ul>{todoList}</ul>;
 }
 
 function ToDoItem(props) {

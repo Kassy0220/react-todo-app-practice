@@ -22,9 +22,9 @@ class ToDoApp extends React.Component {
     const todos = this.state.allToDos;
     const id = this.state.idCounter + 1;
     todos.push({id, content, isEditing: false});
-    this.setState({allToDos: todos, idCounter: id});
 
-    this.saveToDo(todos);
+    this.saveToDos(todos);
+    this.setState({idCounter: id});
     localStorage.setItem("idCounter", id);
   }
 
@@ -36,16 +36,14 @@ class ToDoApp extends React.Component {
       }
       return todo;
     });
-    this.setState({allToDos: todos});
 
-    this.saveToDo(todos);
+    this.saveToDos(todos);
   }
 
   deleteToDo(id) {
     const todos = this.state.allToDos.filter((todo) => todo.id !== id);
-    this.setState({allToDos: todos});
 
-    this.saveToDo(todos);
+    this.saveToDos(todos);
   }
 
   editToDo(id) {
@@ -55,14 +53,13 @@ class ToDoApp extends React.Component {
       }
       return todo;
     });
-    this.setState({allToDos: todos});
 
-    this.saveToDo(todos);
+    this.saveToDos(todos);
   }
 
-  saveToDo(allToDos) {
-    const json = JSON.stringify(allToDos);
-    localStorage.setItem("allToDos", json);
+  saveToDos(todos) {
+    this.setState({allToDos: todos});
+    localStorage.setItem("allToDos", JSON.stringify(todos));
   }
 
   render() {

@@ -110,8 +110,7 @@ class ToDoCreateForm extends React.Component {
 }
 
 function ToDoList(props) {
-  const allToDos = props.allToDos;
-  const todoList = allToDos.map((todo) => (
+  const todoList = props.allToDos.map((todo) => (
     <ToDoItem
       key={todo.id}
       todo={todo}

@@ -13,7 +13,7 @@ class ToDoApp extends React.Component {
     const allToDos = JSON.parse(localStorage.getItem("allToDos"));
     const idCounter = JSON.parse(localStorage.getItem("idCounter"));
 
-    if (allToDos) {
+    if (allToDos && idCounter) {
       this.setState({allToDos: allToDos, idCounter: idCounter});
     }
   }

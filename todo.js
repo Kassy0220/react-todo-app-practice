@@ -123,31 +123,24 @@ function ToDoList(props) {
   return <ul>{todoList}</ul>;
 }
 
-function ToDoItem(props) {
-  const todoId = props.todo.id;
-  const todoContent = props.todo.content;
-  const todoIsEditing = props.todo.isEditing;
-  const updateToDo = props.updateToDo;
-  const editToDo = props.editToDo;
-  const deleteToDo = props.deleteToDo;
-
+function ToDoItem({todo, updateToDo, editToDo, deleteToDo}) {
   const todoItemInEditing = (
-    <ToDoUpdateForm id={todoId} content={todoContent} updateToDo={updateToDo} />
+    <ToDoUpdateForm todo={todo} updateToDo={updateToDo} />
   );
   const todoItem = (
     <div>
-      {todoContent}
+      {todo.content}
       <div className="buttons-container">
         <button
           onClick={() => {
-            editToDo(todoId);
+            editToDo(todo.id);
           }}
         >
           編集
         </button>
         <button
           onClick={() => {
-            deleteToDo(todoId);
+            deleteToDo(todo.id);
           }}
         >
           削除
@@ -158,7 +151,7 @@ function ToDoItem(props) {
 
   return (
     <li className="todo-item">
-      {todoIsEditing ? todoItemInEditing : todoItem}
+      {todo.isEditing ? todoItemInEditing : todoItem}
     </li>
   );
 }
@@ -166,7 +159,7 @@ function ToDoItem(props) {
 class ToDoUpdateForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {value: this.props.content};
+    this.state = {value: this.props.todo.content};
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -178,7 +171,7 @@ class ToDoUpdateForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.updateToDo(this.props.id, this.state.value);
+    this.props.updateToDo(this.props.todo.id, this.state.value);
   }
 
   render() {

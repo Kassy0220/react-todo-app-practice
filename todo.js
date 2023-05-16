@@ -22,8 +22,7 @@ class ToDoApp extends React.Component {
     const id = this.state.idCounter + 1;
 
     this.saveToDos([...this.state.allToDos, {id, content, isEditing: false}]);
-    this.setState({idCounter: id});
-    localStorage.setItem("idCounter", id);
+    this.saveId(id);
   }
 
   updateToDo(id, content) {
@@ -57,6 +56,11 @@ class ToDoApp extends React.Component {
   saveToDos(todos) {
     this.setState({allToDos: todos});
     localStorage.setItem("allToDos", JSON.stringify(todos));
+  }
+
+  saveId(id) {
+    this.setState({idCounter: id});
+    localStorage.setItem("idCounter", id);
   }
 
   render() {

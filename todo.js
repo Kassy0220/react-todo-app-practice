@@ -26,14 +26,12 @@ class ToDoApp extends React.Component {
   }
 
   updateToDo(id, content) {
-    const newToDos = [...this.state.allToDos];
-    const targetIndex = this.state.allToDos.findIndex((todo) => todo.id === id);
-    const updatedToDo = {
-      ...this.state.allToDos[targetIndex],
-      content: content,
-      isEditing: false,
-    };
-    newToDos[targetIndex] = updatedToDo;
+    const newToDos = this.state.allToDos.map((todo) => {
+      if (todo.id === id) {
+        return {...todo, content: content, isEditing: false};
+      }
+      return todo;
+    });
 
     this.saveToDos(newToDos);
   }

@@ -26,12 +26,9 @@ class ToDoApp extends React.Component {
   }
 
   updateToDo(id, content) {
-    const newToDos = this.state.allToDos.map((todo) => {
-      if (todo.id === id) {
-        return {...todo, content: content, isEditing: false};
-      }
-      return todo;
-    });
+    const newToDos = this.state.allToDos.map((todo) =>
+      todo.id === id ? {...todo, content: content, isEditing: false} : todo
+    );
 
     this.saveToDos(newToDos);
   }
@@ -43,10 +40,9 @@ class ToDoApp extends React.Component {
   }
 
   editToDo(id) {
-    const newToDos = [...this.state.allToDos];
-    const targetIndex = this.state.allToDos.findIndex((todo) => todo.id === id);
-    const editedToDo = {...this.state.allToDos[targetIndex], isEditing: true};
-    newToDos[targetIndex] = editedToDo;
+    const newToDos = this.state.allToDos.map((todo) =>
+      todo.id === id ? {...todo, isEditing: true} : todo
+    );
 
     this.saveToDos(newToDos);
   }
